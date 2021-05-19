@@ -1,0 +1,1 @@
+wget https://raw.githubusercontent.com/asad70/wallstreetbets-sentiment-analysis/master/wsbstocks.csv
