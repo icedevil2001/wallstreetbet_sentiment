@@ -11,17 +11,17 @@ from config import Config
 import pandas as pd
 from pathlib import Path
 
-from datetime import datetime
+from datetime import datetime, timedelta
 
 ## TODO: add vars to argparse 
 ## -------------------------------------- ##
 reddit = praw.Reddit(**Config.metadata())
 subreddit = 'wallstreetbets'
-limit = 1e6
+limit = 10000
 comment_level = 1
-sortby = 'gilded' #'hot' ## ['controversial', 'gilded', 'hot', 'new', 'rising', 'top' ]
+sortby = 'new' #'hot' ## ['controversial', 'gilded', 'hot', 'new', 'rising', 'top' ]
 time_filter = 'all' #'all' ##sortby = controversial ==> time_tiler = Can be one of: all, day, hour, month, week, year (default: all).
-
+lookback = 1 ## Number of days
 ## -------------------------------------- ##
 
 def loadTicker(blacklist=[]):
@@ -166,7 +166,7 @@ for sub in topic_sortby(reddit.subreddit(subreddit),sortby, limit, time_filter):
         continue
     if sub.link_flair_text in tags: 
         dt = datetime.fromtimestamp(sub.created_utc)
-        if post_ids and sub.id in post_ids and dt.date() != datetime.today().date():
+        if post_ids and sub.id in post_ids and dt.date() >= (datetime.today() - timedelta(lookback)).date():
             print(f'SKIPPED: [{dt.date()}] - {sub.title}')
             continue 
 
